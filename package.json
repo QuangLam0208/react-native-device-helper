@@ -34,7 +34,8 @@
   "scripts": {
     "example": "yarn workspace react-native-device-helper-example",
     "clean": "del-cli lib",
-    "prepare": "bob build",
+    "build": "bob build",
+    "prepack": "bob build",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "test": "jest",
