@@ -1,0 +1,18 @@
+{
+  "name": "native-device-helper",
+  "version": "1.0.0",
+  "description": "Module đọc thông tin phần cứng Android & iOS dùng chung",
+  "main": "index.ts",
+  "types": "index.ts",
+  "files": [
+    "index.ts",
+    "ios",
+    "android",
+    "expo-module.config.json",
+    "react-native.config.js"
+  ],
+  "peerDependencies": {
+    "expo": "*"
+  },
+  "license": "MIT"
+}
