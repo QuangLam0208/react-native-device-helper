@@ -1,1 +1,0 @@
-{"version":3,"names":["DeviceHelper","multiply","a","b"],"sourceRoot":"..\\..\\src","sources":["multiply.native.tsx"],"mappings":";;AAAA,OAAOA,YAAY,MAAM,yBAAsB;AAE/C,OAAO,SAASC,QAAQA,CAACC,CAAS,EAAEC,CAAS,EAAU;EACrD,OAAOH,YAAY,CAACC,QAAQ,CAACC,CAAC,EAAEC,CAAC,CAAC;AACpC","ignoreList":[]}
