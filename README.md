@@ -1,107 +1,49 @@
-# react-native-device-helper
+# native-module
 
-Native module đọc thông tin thiết bị và phần cứng cho Android & iOS:
-- **Android:** Viết bằng Java với React Native Bridge (`ReactContextBaseJavaModule`).
-- **iOS:** Thiết kế cho Expo Modules API (đang chuẩn bị triển khai).
+Bộ native module cho ứng dụng React Native.
 
-Module cung cấp thông tin hệ điều hành, model thiết bị, dung lượng RAM, trạng thái pin, hiển thị Toast native, và phát sự kiện native ping lên JavaScript.
+Mỗi module là một thư mục độc lập trong repo này và được cài riêng. Ứng dụng chỉ cần cài module mình dùng.
 
-## Thông tin chung
+## Danh sách module
 
-| Hạng mục | Giá trị |
-| :--- | :--- |
-| Nền tảng | Android SDK 24 trở lên (iOS đang hoàn thiện) |
-| Ngôn ngữ | Java (Android) |
-| Framework | React Native Bridge (`ReactContextBaseJavaModule`) |
-| Đã kiểm thử với | Expo SDK 57, React Native 0.86 |
-| Môi trường chạy | Development build hoặc bản release. Expo Go không hỗ trợ. |
+| Module | Chức năng | Nền tảng | Tài liệu |
+| :--- | :--- | :--- | :--- |
+| `native-device-helper` | Thông tin thiết bị, RAM, Pin, Toast, Native Ping Event | Android (iOS đang chuẩn bị) | [README](native-device-helper/README.md) |
 
-## Cấu trúc module
+## Cấu trúc repository
 
 ```text
-react-native-device-helper/
-├── expo-module.config.json       Khai báo module cho Expo Autolinking (iOS)
-├── react-native.config.js        Khai báo module cho React Native CLI Autolinking (Android)
-├── package.json
-├── index.ts                      API TypeScript dùng chung
+native-module/
+├── .gitattributes
+├── .gitignore
 ├── README.md
-├── ios/
-└── android/
-    ├── build.gradle              Cấu hình thư viện Android
-    └── src/main/
-        ├── AndroidManifest.xml
-        └── java/com/devicehelper/
-            ├── DeviceHelperModule.java    Logic native Android
-            └── DeviceHelperPackage.java   ReactPackage cho Autolinking
+└── native-device-helper/
+    ├── expo-module.config.json   Khai báo module cho Expo Autolinking (iOS)
+    ├── react-native.config.js    Khai báo module cho React Native CLI Autolinking (Android)
+    ├── package.json              Cấu hình package (main trỏ trực tiếp vào index.ts)
+    ├── index.ts                  Mã nguồn TypeScript
+    ├── README.md                 Tài liệu riêng của module
+    ├── ios/                      Mã nguồn iOS
+    └── android/                  Mã nguồn Android (Java + React Native Bridge)
+        ├── build.gradle
+        └── src/main/
+            ├── AndroidManifest.xml
+            └── java/com/devicehelper/
+                ├── DeviceHelperModule.java
+                └── DeviceHelperPackage.java
 ```
 
 ## Cài đặt
 
-Cài đặt package vào ứng dụng:
+Cài đặt module qua Git bằng `path:`:
 
 ```bash
-pnpm add "github:QuangLam0208/react-native-device-helper"
+pnpm add "github:QuangLam0208/native-module#path:/native-device-helper"
 ```
 
-Sau khi cài đặt, sinh lại thư mục native và build app:
+Sau khi cài đặt, sinh lại thư mục native và build:
 
 ```bash
 npx expo prebuild --clean
 npx expo run:android
 ```
-
-## Cách sử dụng
-
-```tsx
-import { useEffect, useState } from "react"
-import { View, Text, Button } from "react-native"
-import {
-  getDeviceConstants,
-  getHardwareInfo,
-  showToast,
-  subscribeToDevicePing,
-  triggerNativePing,
-  type HardwareInfo,
-} from "react-native-device-helper"
-
-export function DeviceCard() {
-  const [hardware, setHardware] = useState<HardwareInfo | null>(null)
-  const [lastEvent, setLastEvent] = useState<string>("")
-  const constants = getDeviceConstants()
-
-  useEffect(() => {
-    // 1. Đọc thông tin phần cứng qua Promise
-    getHardwareInfo().then(setHardware)
-
-    // 2. Đăng ký lắng nghe sự kiện từ Native
-    const unsubscribe = subscribeToDevicePing((event) => {
-      setLastEvent(`${event.message} lúc ${new Date(event.timestamp).toLocaleTimeString()}`)
-    })
-
-    return () => unsubscribe()
-  }, [])
-
-  return (
-    <View>
-      <Text>Hệ điều hành: {constants?.ANDROID_VERSION}</Text>
-      <Text>Thiết bị: {constants?.MODEL}</Text>
-      {hardware && (
-        <Text>RAM: {hardware.availRamMb} MB / {hardware.totalRamMb} MB</Text>
-      )}
-      <Button title="Hiện Toast" onPress={() => showToast("Xin chào từ Native!", true)} />
-      <Button title="Bắn Native Ping" onPress={() => triggerNativePing("Test")} />
-      {lastEvent ? <Text>Sự kiện: {lastEvent}</Text> : null}
-    </View>
-  )
-}
-```
-
-## Bảng API
-
-| Hàm / Thuộc tính | Kiểu | Mô tả |
-| :--- | :--- | :--- |
-| `getDeviceConstants()` | `DeviceConstants \| null` | Đọc đồng bộ: OS version, SDK, Model, Manufacturer |
-| `getHardwareInfo()` | `Promise<HardwareInfo>` | Đọc RAM, Mức pin, Trạng thái sạc |
-| `showToast(message, isLong)` | `void` | Hiển thị thông báo Toast native trên Android |
-| `triggerNativePing(note)` | `void` | Kích hoạt native phát sự kiện `onDeviceHelperPing` |
-| `subscribeToDevicePing(callback)` | `() => void` | Đăng ký nhận sự kiện từ Native, trả về hàm hủy đăng ký |

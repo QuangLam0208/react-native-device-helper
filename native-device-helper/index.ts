@@ -1,7 +1,7 @@
 import { NativeModules, NativeEventEmitter, Platform } from "react-native"
 
 const LINKING_ERROR =
-  `Thư viện 'react-native-device-helper' chưa được liên kết!\n\n` +
+  `Thư viện 'native-device-helper' chưa được liên kết!\n\n` +
   Platform.select({ ios: "- Bạn đã chạy 'pod install' chưa?\n", default: "" }) +
   "- Hãy kiểm tra lại xem app đã build lại mã Native chưa.\n"
 

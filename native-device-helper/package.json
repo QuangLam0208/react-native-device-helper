@@ -1,5 +1,5 @@
 {
-  "name": "react-native-device-helper",
+  "name": "native-device-helper",
   "version": "1.0.0",
   "description": "Module đọc thông tin phần cứng Android & iOS dùng chung",
   "main": "index.ts",
