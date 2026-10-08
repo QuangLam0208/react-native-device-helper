@@ -38,7 +38,7 @@ native-module/
 Cài đặt module qua Git bằng `path:`:
 
 ```bash
-pnpm add "github:QuangLam0208/native-module#path:/native-device-helper"
+pnpm add "github:QuangLam0208/react-native-module#path:/native-device-helper"
 ```
 
 Sau khi cài đặt, sinh lại thư mục native và build:
